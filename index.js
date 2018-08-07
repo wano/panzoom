@@ -59,6 +59,7 @@ function createPanZoom(domElement, options) {
   var zoomDoubleClickSpeed = typeof options.zoomDoubleClickSpeed === 'number' ? options.zoomDoubleClickSpeed : defaultDoubleTapZoomSpeed
   var beforeWheel = options.beforeWheel || noop
   var speed = typeof options.zoomSpeed === 'number' ? options.zoomSpeed : defaultZoomSpeed
+  var onMoved = options.onMoved || noop
 
   validateBounds(bounds)
 
@@ -300,8 +301,13 @@ function createPanZoom(domElement, options) {
       parentOffsetY = parentCTM.f
     }
 
-    var x = clientX * parentScaleX - parentOffsetX
-    var y = clientY * parentScaleY - parentOffsetY
+    var parentElement = domController.getOwner();
+    //const palentElementAbsolutePosition = getAbsolutePosition(parentElement)
+    //var x = clientX * parentScaleX - parentOffsetX - palentElementAbsolutePosition.left
+    //var y = clientY * parentScaleY - parentOffsetY - palentElementAbsolutePosition.top
+    const parentElementRect = parentElement.getBoundingClientRect();
+    var x = clientX - parentElementRect.left
+    var y = clientY -  parentElementRect.top
 
     transform.x = x - ratio * (x - transform.x)
     transform.y = y - ratio * (y - transform.y)
